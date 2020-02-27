@@ -1,0 +1,50 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+  background: #fff;
+  font-size: 14px;
+  font-family: "微软雅黑", "Microsoft YaHei", "Apple LiGothic Medium", "Apple LiSung Light", "宋体", Arial, Helvetica, sans-serif;
+}
+
+ul,
+ol,
+li,
+dl,
+dd,
+p,
+input,
+img,
+textarea,
+button {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 0 none;
+}
+
+a,
+button,
+select,
+input {
+  outline: none;
+}
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.center {
+  text-align: center;
+}
+
+.animation {
+  transition: all 0.3s linear;
+}

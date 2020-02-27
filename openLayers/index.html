@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>openLayers</title>
+  <link rel="stylesheet" href="./../common.css">
+  <link rel="stylesheet" href="ol.css">
+  <style>
+    .mapPage {
+      position: relative;
+    }
+
+    .buttonBox {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 999;
+      width: 415px;
+      height: 40px;
+      border: 1px solid #afafaf;
+      background-color: rgba(25, 85, 139, 0.8);
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    .buttonBox li {
+      display: inline-block;
+      width: 100px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .buttonBox li span {
+      padding-left: 15px;
+    }
+
+    .buttonBox ul li:first-child {
+      background: url('./mapEarth.png') no-repeat 5px center;
+    }
+
+    .buttonBox ul li:nth-child(2) {
+      background: url('./mapLength.png') no-repeat 5px center;
+    }
+
+    .buttonBox ul li:nth-child(3) {
+      background: url('./mapArea.png') no-repeat 5px center;
+    }
+
+    .buttonBox ul li:last-child {
+      background: url('./mapClear.png') no-repeat 5px center;
+    }
+
+    .buttonBox ul li:first-child:hover > .mapBgSelect {
+      display: block;
+    }
+
+    .mapBgSelect {
+      display: none;
+      width: 80px;
+      height: 242px;
+      background: rgba(25, 85, 139, 0.8);
+      margin: 1px 10px;
+    }
+
+    .mapBgSelect dd {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      border-bottom: 1px solid #afafaf;
+      background: url('./mapBg2.jpg') no-repeat center;
+    }
+
+    .mapBgSelect dd p {
+      position: absolute;
+      width: 70px;
+      height: 25px;
+      background: rgba(0, 0, 0, 0.5);
+      font-size: 12px;
+      text-align: center;
+      line-height: 25px;
+      left: 5px;
+      bottom: 5px;
+    }
+
+    .mapBgSelect dd:first-child {
+      background: url('./mapBg1.jpg') no-repeat center;
+    }
+
+    .mapBgSelect dd:last-child {
+      background: url('./mapBg3.jpg') no-repeat center;
+    }
+
+    #measureBox {
+      float: left;
+    }
+
+    .checkbox {
+      left: 20px;
+    }
+
+    .tooltip {
+      position: relative;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 4px;
+      color: #fff;
+      padding: 4px 8px;
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+
+    .tooltip-measure {
+      opacity: 1;
+      font-weight: bold;
+    }
+
+    .tooltip-static {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #fff;
+    }
+
+    .tooltip-measure:before,
+    .tooltip-static:before {
+      border-top: 6px solid rgba(0, 0, 0, 0.5);
+      border-right: 6px solid transparent;
+      border-left: 6px solid transparent;
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      margin-left: -7px;
+      left: 50%;
+    }
+
+    .tooltip-static:before {
+      border-top-color: #fff;
+    }
+
+    .ol-popup {
+      position: absolute;
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #cccccc;
+      bottom: 25px;
+      left: -50px;
+      width: 300px;
+    }
+
+    .ol-popup:after,
+    .ol-popup:before {
+      top: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .ol-popup:after {
+      border-top-color: white;
+      border-width: 10px;
+      left: 48px;
+      margin-left: -10px;
+    }
+
+    .ol-popup:before {
+      border-top-color: #ccc;
+      border-width: 11px;
+      left: 48px;
+      margin-left: -11px;
+    }
+
+    #popup-closer {
+      text-decoration: none;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      color: #333;
+      cursor: pointer;
+    }
+
+    #popup-content {
+      font-size: 14px;
+      font-family: "微软雅黑";
+    }
+
+    #popup-content .markerInfo {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="mapPage">
+    <div id="map">
+      <!-- 按钮盒子 -->
+      <div class="buttonBox">
+        <ul>
+          <li>
+            <span>地图切换</span>
+            <dl class="mapBgSelect">
+              <dd>
+                <p>矢量</p>
+              </dd>
+              <dd>
+                <p>影像</p>
+              </dd>
+              <dd>
+                <p>地形</p>
+              </dd>
+            </dl>
+          </li>
+          <li>
+            <span id="lengthButton">测量长度</span>
+          </li>
+          <li>
+            <span id="areaButton">测量面积</span>
+          </li>
+          <li>
+            <span id="clearButton">标识清理</span>
+          </li>
+        </ul>
+      </div>
+      <!-- 气泡弹窗 -->
+      <div id="popup" class="ol-popup">
+        <div id="popup-closer">✖</div>
+        <div id="popup-title" class="popup-title"></div>
+        <div id="popup-content"></div>
+      </div>
+    </div>
+  </div>
+  <script src="./../jquery.min.js"></script>
+  <script src="ol.js"></script>
+  <script>
+    $('#map').css({height: $(window).height()})
+    $(function () {
+      // 矢量地图
+      let mapBg1 = new ol.layer.Tile({
+        title: "天地图路网",
+        visible: false,
+        source: new ol.source.XYZ({
+          url: 'http://t0.tianditu.com/DataServer?T=vec_w&x={x}&y={y}&l={z}' // 矢量
+        })
+      })
+      // 卫星影像地图
+      let mapBg2 = new ol.layer.Tile({
+        title: "天地图卫星影像",
+        source: new ol.source.XYZ({
+          url: 'http://t0.tianditu.com/DataServer?T=img_w&x={x}&y={y}&l={z}' // 影像
+        })
+      })
+      // 地形地图
+      let mapBg3 = new ol.layer.Tile({
+        title: "天地图路网",
+        source: new ol.source.XYZ({
+          url: 'http://t0.tianditu.com/DataServer?T=ter_w&x={x}&y={y}&l={z}' // 矢量
+        })
+      })
+      // 地名地图
+      let mapBg4 = new ol.layer.Tile({
+        source: new ol.source.XYZ({
+          attributions: [new ol.Attribution({
+            html: '地图由<a href="" target="_blank" style="color: #333; text-decoration: none">SJH</a>提供支持'
+          })],
+          url: 'http://t0.tianditu.com/DataServer?T=cva_w&x={x}&y={y}&l={z}' // 地名
+        })
+      })
+      // 图标层
+      let source = new ol.source.Vector({
+        wrapX: false
+      })
+      let layer = new ol.layer.Vector({
+        source: source
+      })
+
+      // 绘制地图
+      let map = new ol.Map({
+        target: 'map',
+        layers: [mapBg1, mapBg2, mapBg3, mapBg4, layer],
+        controls: [
+          new ol.control.ScaleLine(),
+          new ol.control.Attribution(),
+          new ol.control.FullScreen()
+        ],
+        view: new ol.View({
+          center: ol.proj.fromLonLat([117.31, 31.86]),
+          zoom: 12,
+          minZoom: 4,
+          maxZoom: 20,
+        })
+      })
+
+      // 创建一个WGS84球体对象
+      let wgs84Sphere = new ol.Sphere(6378137)
+      // 创建一个当前要绘制的对象
+      let sketch = new ol.Feature()
+      // 创建一个帮助提示框对象
+      let helpTooltipElement
+      // 创建一个帮助提示信息对象
+      let helpTooltip
+      // 创建一个测量提示框对象
+      let measureTooltipElement
+      // 创建一个测量提示信息对象
+      let measureTooltip
+      // 定义一个交互式绘图对象
+      let draw
+
+      // 添加交互式绘图对象的函数
+      function addInteraction(flag) {
+        if (!flag) return
+        // 获取当前选择的绘制类型 None：无，Point：点，LineString：划线，Polygon：多边形，Circle：圆
+        let type = flag
+        // 创建一个交互式绘图对象
+        draw = new ol.interaction.Draw({
+          // 绘制的数据源
+          source: source,
+          // 绘制类型
+          type: type,
+          // 样式
+          style: new ol.style.Style({
+            fill: new ol.style.Fill({
+              color: 'rgba(255, 255, 255, 0.2)'
+            }),
+            stroke: new ol.style.Stroke({
+              color: 'rgba(255, 0, 0, 0.8)',
+              lineDash: [10, 10],
+              width: 2
+            }),
+            image: new ol.style.Circle({
+              radius: 5,
+              stroke: new ol.style.Stroke({
+                color: 'rgba(255, 0, 0, 0.8)'
+              }),
+              fill: new ol.style.Fill({
+                color: 'rgba(255, 0, 0, 0.2)'
+              })
+            })
+          })
+        })
+        // 将交互绘图对象添加到地图中
+        map.addInteraction(draw)
+
+        // 创建测量提示框
+        createMeasureTooltip()
+
+        // 定义一个事件监听
+        let listener
+        // 定义一个控制鼠标点击次数的变量
+        let count = 0
+        // 绘制开始事件
+        draw.on('drawstart', (evt) => {
+          sketch = evt.feature
+          // 提示框的坐标
+          let tooltipCoord = evt.coordinate
+          // 监听几何要素的change事件
+          listener = sketch.getGeometry().on('change', (evt) => {
+            // 获取绘制的几何对象
+            let geom = evt.target
+            // 定义一个输出对象，用于记录面积和长度
+            let output
+            if (geom instanceof ol.geom.Polygon) {
+              map.removeEventListener('singleclick')
+              map.removeEventListener('dblclick')
+              // 输出多边形的面积
+              output = formatArea(geom)
+              // 获取多变形内部点的坐标
+              tooltipCoord = geom.getInteriorPoint().getCoordinates()
+            } else if (geom instanceof ol.geom.LineString) {
+              // 输出多线段的长度
+              output = formatLength(geom)
+              // 获取多线段的最后一个点的坐标
+              tooltipCoord = geom.getLastCoordinate()
+            } else if (geom instanceof ol.geom.Point) {
+
+            }
+            // 设置测量提示框的内标签为最终输出结果
+            measureTooltipElement.innerHTML = output
+            // 设置测量提示信息的位置坐标
+            measureTooltip.setPosition(tooltipCoord)
+          })
+
+          // 地图单击事件
+          map.on('singleclick', (evt) => {
+            // 设置测量提示信息的位置坐标，用来确定鼠标点击后测量提示框的位置
+            measureTooltip.setPosition(evt.coordinate)
+            // 如果是第一次点击，则设置测量提示框的文本内容为起点
+            if (count == 0)
+              measureTooltipElement.innerHTML = "起点"
+            // 根据鼠标点击位置生成一个点
+            let point = new ol.geom.Point(evt.coordinate)
+            // 将该点要素添加到矢量数据源中
+            source.addFeature(new ol.Feature(point))
+            // 更改测量提示框的样式，使测量提示框可见
+            measureTooltipElement.className = 'tooltip tooltip-static'
+            // 创建测量提示框
+            createMeasureTooltip()
+            // 点击次数增加
+            count++
+          })
+
+          // 地图双击事件
+          map.on('dblclick', (evt) => {
+            // 根据点击添加最后一个点
+            let point = new ol.geom.Point(evt.coordinate)
+            source.addFeature(new ol.Feature(point))
+          })
+        }, this)
+
+        // 绘制结束事件
+        draw.on('drawend', (evt) => {
+          count = 0
+          // 设置测量提示框的样式
+          measureTooltipElement.className = 'tooltip tooltip-static'
+          // 设置偏移量
+          measureTooltip.setOffset([0, -7])
+          // 清空绘制要素
+          sketch = null
+          // 清空测量提示要素
+          measureTooltipElement = null
+          // 创建测量提示框
+          createMeasureTooltip()
+          // 移除事件监听
+          ol.Observable.unByKey(listener)
+          // 移除地图单击事件
+          map.removeEventListener('singleclick')
+          // 移除当前绘画对象
+          map.removeInteraction(draw)
+        }, this)
+      }
+
+      // 创建测量提示框
+      function createMeasureTooltip() {
+        // 创建测量提示框的div
+        measureTooltipElement = document.createElement('div')
+        measureTooltipElement.setAttribute('id', 'lengthLabel')
+        // 设置测量提示要素的样式
+        measureTooltipElement.className = 'tooltip tooltip-measure'
+        // 创建一个测量提示的覆盖标注
+        measureTooltip = new ol.Overlay({
+          element: measureTooltipElement,
+          offset: [0, -15],
+          positioning: 'bottom-center'
+        })
+        // 将测量提示的覆盖标注添加到地图中
+        map.addOverlay(measureTooltip)
+      }
+
+      // 格式化测量长度
+      let formatLength = (line) => {
+        // 定义长度变量
+        let length
+        // 获取坐标串
+        let coordinates = line.getCoordinates()
+        // 初始长度为0
+        length = 0
+        // 获取源数据的坐标系
+        let sourceProj = map.getView().getProjection()
+        // 进行点的坐标转换
+        for (let i = 0; i < coordinates.length - 1; i++) {
+          // 第一个点
+          let c1 = ol.proj.transform(coordinates[i], sourceProj, 'EPSG:4326')
+          // 第二个点
+          let c2 = ol.proj.transform(coordinates[i + 1], sourceProj, 'EPSG:4326')
+          // 获取转换后的球面距离
+          length += wgs84Sphere.haversineDistance(c1, c2)
+        }
+        // 定义输出变量
+        let output
+        // 如果长度大于1000，则使用km单位，否则使用m单位
+        if (length > 1000)
+          output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km'
+        else
+          output = (Math.round(length * 100) / 100) + ' ' + 'm'
+        return output
+      }
+
+      // 格式化测量面积
+      let formatArea = (polygon) => {
+        // 定义面积变量
+        let area
+        // 获取初始坐标系
+        let sourceProj = map.getView().getProjection()
+        // 克隆该几何对象然后转换坐标系
+        let geom = polygon.clone().transform(sourceProj, 'EPSG:4326')
+        // 获取多边形的坐标系
+        let coordinates = geom.getLinearRing(0).getCoordinates()
+        // 获取球面面积
+        area = Math.abs(wgs84Sphere.geodesicArea(coordinates))
+        // 定义输出变量
+        let output
+        // 当面积大于10000时，转换为平方千米，否则为平方米
+        if (area > 10000)
+          output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>'
+        else
+          output = (Math.round(area * 100) / 100) + ' ' + 'm<sup>2</sup>'
+        return output
+      }
+
+      // 取消双击放大
+      map.getInteractions().item(1).setActive(false)
+
+      // 地图界面切换
+      $('.mapBgSelect dd').eq(0).on('click', () => {
+        mapBg1.setVisible(true)
+        mapBg2.setVisible(false)
+        mapBg3.setVisible(false)
+      })
+      $('.mapBgSelect dd').eq(1).on('click', () => {
+        mapBg1.setVisible(false)
+        mapBg2.setVisible(true)
+        mapBg3.setVisible(false)
+      })
+      $('.mapBgSelect dd').eq(2).on('click', () => {
+        mapBg1.setVisible(false)
+        mapBg2.setVisible(false)
+        mapBg3.setVisible(true)
+      })
+
+      // 测量类型发生改变时触发事件
+      $('#lengthButton').on('click', () => {
+        //移除之前的绘制对象
+        map.removeInteraction(draw)
+        //重新进行绘制
+        addInteraction('LineString')
+      })
+      $('#areaButton').on('click', () => {
+        //移除之前的绘制对象
+        map.removeInteraction(draw)
+        //重新进行绘制
+        addInteraction('Polygon')
+      })
+
+      // 清理地图图层
+      $('#clearButton').on('click', () => {
+        // 清除测量数据
+        map.getOverlays().clear()
+        // 清除测量轨迹
+        source.clear()
+        // 清除标志点
+        vectorLayer.setVisible(false)
+      })
+
+      // 地址坐标数据
+      let addressList = [{
+        point: [117.31, 31.89],
+        name: '瑶海公园',
+        content: '瑶海公园真好玩'
+      }, {
+        point: [117.31, 31.79],
+        name: '火车站',
+        content: '火车站人多'
+      }]
+
+      let setIconFeature = (address) => {
+        let iconFeature = new ol.Feature({
+          geometry: new ol.geom.Point(ol.proj.fromLonLat(address.point)),
+          name: address.name,
+          content: address.content
+        })
+        iconFeature.setStyle(new ol.style.Style({
+          //点的样式
+          image: new ol.style.Icon({
+            // 标注图片和文字之间的距离
+            anchor: [0.5, 40],
+            // 标注样式的起点位置
+            anchorOrigin: 'top-right',
+            // X方向单位
+            anchorXUnits: 'fraction',
+            // Y方向单位
+            anchorYUnits: 'pixels',
+            // 偏移起点位置的方向
+            offsetOrigin: 'top-right',
+            // 透明度
+            opacity: 0.75,
+            // 图标的url
+            src: 'https://img1.timeface.cn/times/4936d746763bfb678bac5e041bc3fe13.png'
+          })
+        }))
+        return iconFeature
+      }
+
+      // 矢量标注的数据源
+      let vectorSource = new ol.source.Vector({
+        features: [setIconFeature(addressList[0]), setIconFeature(addressList[1])] // 可以添加多个点
+      })
+      // 矢量标注图层
+      let vectorLayer = new ol.layer.Vector({
+        source: vectorSource
+      })
+      // 将矢量标注图层添加到map中
+      map.addLayer(vectorLayer)
+
+      // 获取id为popup的div标签
+      let popupContainer = document.getElementById('popup')
+      // 获取id为popup-content的div标签
+      let popupTitle = document.getElementById('popup-title')
+      // 获取id为popup-content的div标签
+      let popupContent = document.getElementById('popup-content')
+      // 获取id为popup-closer的a标签 
+      let popupCloser = document.getElementById('popup-closer')
+
+      //初始化一个覆盖层
+      let popup = new ol.Overlay({
+        //元素内容
+        element: popupContainer,
+        autoPan: true,
+        // 覆盖层如何与位置坐标匹配
+        positioning: 'bottom-center',
+        // 事件传播到地图视点的时候是否应该停止
+        stopEvent: false,
+        autoPanAnimation: {
+          // 动画持续时间
+          duration: 250
+        }
+      })
+      // 将覆盖层添加到map中
+      map.addOverlay(popup)
+
+      // 关闭弹窗
+      popupCloser.onclick = () => {
+        popup.setPosition(undefined)
+        popupCloser.blur()
+        return false
+      }
+
+      // 为map注册一个单击事件的监听
+      map.on('click', (evt) => {
+        popup.setPosition(undefined)
+        // 获取坐标点
+        let coordinate = evt.coordinate
+        let feature = map.forEachFeatureAtPixel(evt.pixel, (feature, layer) => {
+          // 在视口中遍历所有具有像素颜色的图层，如果图层存在，则返回
+          return feature
+        })
+        if (feature) {
+          popupTitle.innerHTML = feature.N.name
+          // 将内容div的内容清空
+          popupContent.innerHTML = feature.N.content
+          // 如果当前popup覆盖层没有坐标，则设置坐标
+          if (popup.getPosition() == undefined) {
+            popup.setPosition(coordinate)
+          }
+        }
+      })
+
+      // 为map注册一个pointermove事件的监听
+      map.on('pointermove', (e) => {
+        // 获取map的像素位置信息
+        let pixel = map.getEventPixel(e.originalEvent)
+        // map视口中是否包含某个要素
+        let hit = map.hasFeatureAtPixel(pixel)
+        // 设置符合当前条件的鼠标样式
+        map.getTargetElement().style.cursor = hit ? 'pointer' : ''
+      })
+    }())
+  </script>
+</body>
+
+</html>

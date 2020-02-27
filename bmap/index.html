@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>bmap</title>
+  <link rel="stylesheet" href="./../common.css">
+  <script src="./../jquery.min.js"></script>
+  <script src="http://api.map.baidu.com/library/DistanceTool/1.2/src/DistanceTool_min.js"></script>
+  <script src="http://api.map.baidu.com/api?v=2.0&ak=CYcUayttvj3SmbLjYfjYbfZmyQODUv5s"></script>
+  <script src="geoUtils.js"></script>
+  <script src="areaTool.min.js"></script>
+  <style>
+    #bmap {
+      width: 400px;
+      height: 400px;
+      margin: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="mapMeasure">测量距离</div>
+  <div id="measureArea">测量面积</div>
+  <div id="bmap"></div>
+  <script>
+    var map = new BMap.Map("bmap") // 创建Map实例
+    map.centerAndZoom(new BMap.Point(117.35, 31.86), 13) // 初始化地图,设置中心点坐标和地图级别
+    map.addControl(new BMap.MapTypeControl({mapTypes:[BMAP_NORMAL_MAP, BMAP_HYBRID_MAP]}))
+    map.enableScrollWheelZoom(true) //开启鼠标滚轮缩放
+    map.clearOverlays() //清除地图上所有覆盖物
+    map.setMapType(BMAP_HYBRID_MAP) // 默认卫星图
+
+    /* 测距方法 */
+    var myDis = new BMapLib.DistanceTool(map) // 测距插件
+    var contextMenu = new BMap.ContextMenu() //创建右键对象
+    var txtMenuItem = [
+      {text: '折线测距', callback: () => myDis.open()},
+      {text: '在此添加标注',
+        callback: (p) => {
+          var marker = new BMap.Marker(p), px = map.pointToPixel(p)
+          map.addOverlay(marker)
+        }
+      }
+    ]
+    for (var i = 0; i < txtMenuItem.length; i++) {
+      contextMenu.addItem(new BMap.MenuItem(txtMenuItem[i].text,txtMenuItem[i].callback, 100))
+      if (i == 1 || i == 3) contextMenu.addSeparator()
+    }
+    // 开始测绘距离
+    $('#mapMeasure').on('click', () => myDis.open())
+    // 双击事件取消测绘
+    $('#bmap').on('dblclick', (evt) => myDis.close())
+    //面积测量
+    $('#measureArea').on('click', () => createMeasureAreaTool(map).open())
+  </script>
+</body>
+</html>

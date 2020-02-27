@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>flex</title>
+</head>
+
+<body>
+  <div class="boxBg">
+    <div class="box box1">
+      <span></span>
+    </div>
+    <div class="box box2">
+      <span></span>
+      <span></span>
+    </div>
+    <div class="box box3">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="box box4">
+      <g>
+        <span></span>
+        <span></span>
+      </g>
+      <g>
+        <span></span>
+        <span></span>
+      </g>
+    </div>
+    <div class="box box5">
+      <g>
+        <span></span>
+        <span></span>
+      </g>
+      <g>
+        <span></span>
+      </g>
+      <g>
+        <span></span>
+        <span></span>
+      </g>
+    </div>
+    <div class="box box6">
+      <g>
+        <span></span>
+        <span></span>
+        <span></span>
+      </g>
+      <g>
+        <span></span>
+        <span></span>
+        <span></span>
+      </g>
+    </div>
+  </div>
+  <style>
+    *,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .boxBg {
+      display: -webkit-flex;
+      display: flex;
+      width: 700px;
+      height: 700px;
+      flex-flow: row wrap;
+      justify-content: space-between;
+      align-content: space-between;
+    }
+
+    .box {
+      width: 198px;
+      height: 198px;
+      display: -webkit-flex;
+      display: flex;
+      border-radius: 10px;
+      background: #f3f3f3;
+      font-size: 30px;
+      border: 1px solid #000000;
+      flex-flow: row wrap;
+    }
+
+    span {
+      width: 65px;
+      height: 65px;
+      display: flex;
+      background: #000000;
+      border-radius: 50%;
+    }
+
+    .box1 {
+      justify-content: center;
+      align-items: center;
+    }
+
+    .box2 {
+      justify-content: space-between;
+      flex-direction: column;
+    }
+
+    .box2 span:nth-child(2) {
+      align-self: flex-end;
+    }
+
+    .box3 {}
+
+    .box3 span:nth-child(2) {
+      align-self: center;
+    }
+
+    .box3 span:nth-child(3) {
+      align-self: flex-end;
+    }
+
+    .box4 {
+      align-content: space-between;
+    }
+
+    .box4 g {
+      display: -webkit-flex;
+      display: flex;
+      flex-basis: 100%;
+      justify-content: space-between;
+    }
+
+    .box5 {
+      align-content: space-between;
+    }
+
+    .box5 g {
+      display: -webkit-flex;
+      display: flex;
+      flex-basis: 100%;
+      justify-content: space-between;
+    }
+
+    .box5 g:nth-child(2) {
+      justify-content: center;
+    }
+
+    .box6 {
+      flex-flow: column wrap;
+      align-content: space-between;
+      justify-content: space-around;
+    }
+  </style>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>indexDB</title>
+</head>
+<body>
+  <div onclick="openFun()">打开数据库</div>
+  <div onclick="closeFun()">关闭数据库</div>
+  <div onclick="addFun()">写入</div>
+  <div onclick="updateFun()">修改</div>
+  <div onclick="readFun()">读取</div>
+  <div onclick="deleteFun()">删除</div>
+  <div onclick="deleteAllFun()">清空</div>
+  <div onclick="cursorFun()">遍历</div>
+  <div onclick="readOnlyFun()">索引</div>
+  <script>
+    var db
+    // 打开数据库成功
+    function openFun() {
+      let request = window.indexedDB.open('main') || window.webkitindexedDB.open('main')
+      request.onsuccess = (event) => {
+        db = request.result
+        console.log('数据库打开成功')
+      }
+      request.onerror = (event) => console.log('数据库打开失败')
+      request.onupgradeneeded = (event) => {
+        db = event.target.result
+        let objectStore
+        if (!db.objectStoreNames.contains('person')) {
+          objectStore = db.createObjectStore('person', {keyPath: 'id'})
+          objectStore.createIndex('name', 'name', {unique: false})
+          objectStore.createIndex('age', 'age', {unique: false})
+          objectStore.createIndex('email', 'email', {unique: false})
+        }
+      }
+    }
+    // 关闭数据库
+    function closeFun() {
+      db.close()
+      console.log('数据库关闭成功')
+    }
+    // 新增数据
+    function addFun() {
+      let addRequest = db.transaction(['person'], 'readwrite')
+        .objectStore('person')
+        .add({id: 1, name: 'john', age: 24, email: '111@qq.com'})
+      
+      addRequest.onsuccess = (event) => console.log('数据写入成功')
+      addRequest.onerror = (event) => console.log('数据写入失败')
+    }
+    // 读取数据
+    function readFun() {
+      let readRequest = db.transaction(['person'])
+        .objectStore('person')
+        .get(1)
+
+      readRequest.onerror = (event) => console.log('数据读取失败')
+      readRequest.onsuccess = (event) => {
+        let result = event.target.result
+        if (result) {
+          console.log(`id: ${result.id}`)
+          console.log(`name: ${result.name}`)
+          console.log(`age: ${result.age}`)
+          console.log(`email: ${result.email}`)
+        } else console.log('未能获取数据')
+      }
+    }
+    // 修改数据
+    function updateFun() {
+      let putRequest = db.transaction(['person'], 'readwrite')
+        .objectStore('person')
+        .put({ id: 1, name: '李四', age: 35, email: 'lisi@example.com' })
+
+      putRequest.onsuccess = (event) => console.log('数据更新成功')
+      putRequest.onerror = (event) => console.log('数据更新失败')
+    }
+    // 删除数据
+    function deleteFun() {
+      let deleteRequest = db.transaction(['person'], 'readwrite')
+        .objectStore('person')
+        .delete(1)
+      deleteRequest.onsuccess = (event) => console.log('数据删除成功')
+      deleteRequest.onerror = (event) => console.log('数据删除失败')
+    }
+    // 清空数据库
+    function deleteAllFun() {
+      let deleteAllRequest = db.transaction(['person'], 'readwrite')
+        .objectStore('person')
+        .clear()
+
+      deleteAllRequest.onsuccess = (event) => console.log('数据清空成功')
+      deleteAllRequest.onerror = (event) => console.log('数据清空失败')
+    }
+    // 遍历数据
+    function cursorFun() {
+      let cursorRequest = db.transaction(['person'])
+        .objectStore('person')
+        .openCursor()
+      
+      cursorRequest.onsuccess = (event) => {
+        let cursor = event.target.result
+        if (cursor) {
+          console.log(`id: ${cursor.key}`)
+          console.log(`name: ${cursor.value.name}`)
+          console.log(`age: ${cursor.value.age}`)
+          console.log(`email: ${cursor.value.email}`)
+          cursor.continue()
+        } else console.log('未能获取更多数据')
+      }
+    }
+    // 索引搜索
+    function readOnlyFun() {
+      let readOnlyRequest = db.transaction(['person'], 'readonly')
+        .objectStore('person')
+        .index('name')
+        .get('李四')
+
+      readOnlyRequest.onsuccess = (event) => {
+        let result = event.target.result
+        if (result) {
+          console.log(`id: ${result.id}`)
+          console.log(`name: ${result.name}`)
+          console.log(`age: ${result.age}`)
+          console.log(`email: ${result.email}`)
+        } else console.log('未能获取数据')
+      }
+    }
+  </script>
+</body>
+</html>

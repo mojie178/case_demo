@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>echarts</title>
+  <link rel="stylesheet" href="./../common.css">
+  <style>
+    body {
+      background: #070a2b;
+    }
+  </style>
+  <style>
+    #chinaMap {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="chinaMap"></div>
+  <div id="proMap"></div>
+  <script src="./../jquery.min.js"></script>
+  <script src="echarts.min.js"></script>
+  <script src="china.js"></script>
+  <script src="city.js"></script>
+  <script>
+    $(function () {
+      var BJData = []
+      var areaList = [{
+          airStationCount: 23,
+          areaId: 340100,
+          areaName: "合肥市",
+          equipmentCount: 678,
+          projectCount: 11
+        },
+        {
+          airStationCount: 2,
+          areaId: 340200,
+          areaName: "芜湖市",
+          equipmentCount: 8,
+          projectCount: 1
+        }
+      ]
+      areaList.map(function (item) {
+        BJData.push([{
+          name: item.areaName || '',
+          value: item.state || 2,
+          count: item.projectCount || ''
+        }, {
+          name: '合肥市'
+        }])
+      });
+      var convertData = function (data) {
+        var res = [];
+        for (var i = 0; i < data.length; i++) {
+          var dataItem = data[i];
+          var fromCoord = geoCoordMap[dataItem[1].name];
+          var toCoord = geoCoordMap[dataItem[0].name];
+          if (fromCoord && toCoord) {
+            res.push([{
+                coord: fromCoord,
+                value: dataItem[0].value
+              },
+              {
+                coord: toCoord,
+              }
+            ]);
+          }
+        }
+        return res;
+      };
+      var series = [];
+      [
+        ['合肥市', BJData]
+      ].forEach(function (item, i) {
+        series.push({
+          type: 'lines',
+          zlevel: 2,
+          effect: {
+            show: true,
+            period: 4, //箭头指向速度，值越小速度越快
+            trailLength: 0.02, //特效尾迹长度[0,1]值越大，尾迹越长重
+            symbol: 'arrow', //箭头图标
+            symbolSize: 5, //图标大小
+          },
+          lineStyle: {
+            normal: {
+              width: 1, //尾迹线条宽度
+              opacity: 0, //尾迹线条透明度
+              curveness: 0 //尾迹线条曲直度
+            }
+          },
+          data: convertData(item[1])
+        }, { //被攻击点样式
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: { //涟漪特效
+            period: 4, //动画时间，值越小速度越快
+            brushType: 'stroke', //波纹绘制方式 stroke, fill
+            scale: 4 //波纹圆环最大限制，值越大波纹越大
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right', //显示位置
+              offset: [5, 0], //偏移设置
+              formatter: '{b}' //圆环显示文字
+            },
+            emphasis: {
+              show: true
+            }
+          },
+          symbol: 'circle',
+          symbolSize: function (val) {
+            return 4 + val[2] / 10; //圆环大小
+          },
+          itemStyle: {
+            normal: {
+              show: false,
+              color: '#f00'
+            }
+          },
+          data: item[1].map(function (dataItem) {
+            return {
+              name: dataItem[0].name,
+              value: geoCoordMap[dataItem[0].name].concat([dataItem[0].value]),
+              count: dataItem[0].count
+            };
+          }),
+        }, { //天津 攻击点样式
+          type: 'scatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: {
+            period: 4,
+            brushType: 'stroke',
+            scale: 4
+          },
+          label: {
+            normal: {
+              show: true,
+              position: 'right',
+              color: '#00ffff',
+              formatter: '{b}',
+              textStyle: {
+                color: "#00ffff"
+              }
+            },
+            emphasis: {
+              show: true
+            }
+          },
+          symbol: 'pin',
+          symbolSize: 30,
+          itemStyle: {
+            normal: {
+              show: true,
+              color: '#9966cc'
+            }
+          },
+          data: [{
+            name: item[0],
+            value: geoCoordMap[item[0]].concat([0])
+          }],
+        });
+      });
+
+      var optionChina = {
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(0,90,139,0.7)', // 背景
+          borderColor: '#FFFFCC',
+          showDelay: 0,
+          hideDelay: 0,
+          enterable: true,
+          transitionDuration: 0,
+          extraCssText: 'z-index:100',
+          formatter: function (params, ticket, callback) {
+            //根据业务自己拓展要显示的内容
+            var res = "";
+            var name = params.data.name;
+            var count = params.data.count;
+            res = "<span style='color:red;'>" + name + "</span><br/>项目总数：" + count;
+            return count ? res : null;
+          }
+        },
+        visualMap: { //图例值控制
+          min: 1,
+          max: 2,
+          calculable: true,
+          color: ['#409EFF', '#F56C6C'], // 报警色值控制
+          textStyle: {
+            color: '#fff'
+          },
+          show: false
+        },
+        geo: {
+          map: 'china',
+          label: {
+            emphasis: {
+              show: false
+            }
+          },
+          roam: false, //是否允许缩放
+          layoutCenter: ['50%', '53%'], //地图位置
+          layoutSize: "108%",
+          itemStyle: {
+            normal: {
+              color: 'rgba(51, 69, 89, .0)', //地图背景色
+              borderColor: '#66D6FF', //省市边界线
+            },
+            emphasis: {
+              color: 'rgba(37, 43, 61, .5)' //悬浮背景
+            }
+          }
+        },
+        series: series
+      };
+      var counts = optionChina.series[0].data.length; //获取所有闪动圆环数量
+      var dataIndex = 0;
+      //让圆环的提示框自动触发轮播显示
+      function autoHoverTip() {
+        for (var i = 0; i < counts; i++) {
+          (function (i) {
+            ts = setTimeout(function () {
+              echarts.init(document.getElementById('chinaMap')).dispatchAction({
+                type: 'showTip',
+                seriesIndex: 1,
+                dataIndex: i
+              });
+            }, 5000 * i);
+          })(i);
+        }
+      }
+      setTimeout(function () {
+        autoHoverTip();
+        tv = setInterval(autoHoverTip, counts * 5600);
+      }, 500);
+      echarts.init(document.getElementById('chinaMap')).setOption(optionChina);
+      echarts.init(document.getElementById('chinaMap')).on('click', function (params) {
+        // 监控地图
+        proMap(params.name || '安徽')
+      });
+    }());
+
+    function proMap(type) {
+      // 获取省内信息
+      if (cityInfo(type).id == 0) return
+      var uploadedDataURL = cityInfo(type).link;
+      var myChart = echarts.init(document.getElementById('proMap'));
+      // myChart.showLoading();
+      $.getJSON(uploadedDataURL, function (geoJson) {
+        echarts.registerMap(cityInfo(type).name, geoJson);
+        myChart.hideLoading();
+        var data = [];
+        res.data.map(function (doc) {
+          data.push({
+            name: doc.areaName != "" ? doc.areaName.split(" ")[1] : "",
+            value: doc.projectCount || 0
+          })
+        })
+        var convertData = function (data) {
+          var res = [];
+          for (var i = 0; i < data.length; i++) {
+            var geoCoord = geoCoordMap[data[i].name];
+            if (geoCoord) {
+              res.push({
+                name: data[i].name,
+                value: geoCoord.concat(data[i].value)
+              });
+            }
+          }
+          return res;
+        };
+        var optionCity = {
+          tooltip: {
+            trigger: 'item',
+            formatter: function (params) {
+              var countValue = params.value
+              return params.value != countValue ? '' : ('项目总数：' + ((params.value.length >= 3 ? params.value[2] :
+                params.value) || 0));
+            }
+          },
+          geo: {
+            show: true,
+            map: cityInfo(type).name,
+            label: {
+              normal: {
+                show: false
+              },
+              emphasis: {
+                show: false,
+              }
+            },
+            roam: false,
+            itemStyle: {
+              normal: {
+                color: 'rgba(51, 69, 89, .0)', //地图背景色
+                borderColor: '#66D6FF', //省市边界线
+              },
+              emphasis: {
+                color: 'rgba(37, 43, 61, .5)' //悬浮背景
+              }
+            }
+          },
+          series: [{
+              type: 'scatter',
+              coordinateSystem: 'geo',
+              data: convertData(data),
+              symbolSize: function (val) {
+                return 10
+              },
+              label: {
+                normal: {
+                  formatter: '{b}',
+                  position: 'right',
+                  show: true
+                },
+                emphasis: {
+                  show: true
+                }
+              },
+              itemStyle: {
+                normal: {
+                  color: '#F4E925'
+                }
+              }
+            },
+            {
+              type: 'map',
+              map: cityInfo(type).name,
+              geoIndex: 0,
+              aspectScale: 0.75, //长宽比
+              showLegendSymbol: false, // 存在legend时显示
+              label: {
+                normal: {
+                  show: false
+                },
+                emphasis: {
+                  show: false,
+                  textStyle: {
+                    color: '#F1F1F3'
+                  }
+                }
+              },
+              roam: true,
+              animation: false,
+              data: data
+            },
+          ]
+        };
+        echarts.init(document.getElementById('proMap')).setOption(optionCity);
+      });
+    }
+  </script>
+</body>
+
+</html>
