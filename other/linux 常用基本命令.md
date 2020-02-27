@@ -1,6 +1,6 @@
 # linux 常用基本命令
 
-## <a name="k5m1ug"></a>显示时间指令：date
+## 显示时间指令：date
 
 ```powershell
 # 显示时间 例：Wed May 23 09:08:13 CST 2018
@@ -11,7 +11,7 @@ $ date +%Y/%m/%d
 $ date +%H:%M
 ```
 
-## <a name="f3lghb"></a>显示日历指令
+## 显示日历指令
 
 ```powershell
 # 显示当前月份
@@ -22,26 +22,26 @@ $ cal 2018
 $ cal 10 2009
 ```
 
-## <a name="hlaxrk"></a>简单好用的计算器
+## 简单好用的计算器
 
 ```powershell
 $ bc
 ```
 
-## <a name="882ylz"></a>重要的几个热键 [Tab], [ctrl]-c, [ctrl]-d
+## 重要的几个热键 [Tab], [ctrl]-c, [ctrl]-d
 
 * Tab 按键：具有『命令补全』不『档案补齐』的功能
 * Ctrl+c 按键：让当前的程序『停掉』
 * Ctrl+d 按键：通常代表着：『键盘输入结束 (End Of File, EOF 戒 End OfInput)』的意思；另外，他也可以用来取代 exit。
 
-## <a name="hpcxev"></a>数据同步写入磁盘
+## 数据同步写入磁盘
 
 ```powershell
 $ sync
 ```
 > 输入 sync，那举在内存中尚未被更新的数据，就会被写入硬盘中；所以，这个指令在系统关机戒重新启动前，很重要喔！最好多执行几次！
 
-## <a name="dg44wt"></a>惯用的关机指令
+## 惯用的关机指令
 
 ```powershell
 $ shutdown
@@ -71,7 +71,7 @@ $ shutdown -r +30 'The system will reboot'
 $ shutdown -k now 'This system will reboot'
 ```
 
-## <a name="ruc4ql"></a>切换执行等级
+## 切换执行等级
 
 ```powershell
 $ init
@@ -87,7 +87,7 @@ __Linux 共有七种执行等级：__
 > 使用 init 这个指令来切换各模式：
 > 如果你想要关机的话，除了上述的 shutdown -h now 以及 poweroff 之外，你也可以使用如下的指令来关机：\$ init 0
 
-## <a name="7ectyg"></a>改变文件的所属群组
+## 改变文件的所属群组
 
 ```powershell
 $ chgrp
@@ -97,7 +97,7 @@ $ chgrp
 $ chgrp -R mengxin /user/meng
 ```
 
-## <a name="f0zokp"></a>改变文件拥有者
+## 改变文件拥有者
 
 ```powershell
 $ chown [-R] 账号名称 档案或目录
@@ -113,7 +113,7 @@ $ ls -l
 -rw-r--r-- l root root 68495 Jun 25 08:53 install.log
 ```
 
-## <a name="8omoir"></a>改变文件的权限
+## 改变文件的权限
 
 权限范围的表示法如下：
 u User，即文件或目录的拥有者；
@@ -139,7 +139,7 @@ $ chmod
   <权限范围>=<权限设置>：指定权限范围的文件或目录的该选项权限设置；
 ```
 
-## <a name="ff8ghp"></a>查看版本信息
+## 查看版本信息
 
 ```powershell
 # 可显示电脑以及操作系统的相关信息
@@ -148,7 +148,7 @@ $ uname -a
 $ lsb_release -a
 ```
 
-## <a name="4pmpvc"></a>变换目录
+## 变换目录
 
 ```powershell
 # 最重点的就是目录的绝对路径与相关路径，还有一些特殊目录的符号
@@ -165,13 +165,13 @@ $ cd ..
 $ cd -
 ```
 
-## <a name="rx3lyr"></a>显示当前所在目录
+## 显示当前所在目录
 
 ```powershell
 $ pwd
 ```
 
-## <a name="aw5imd"></a>建立新目录
+## 建立新目录
 
 ```powershell
 $ mkdir [-mp] 目录名称
@@ -179,14 +179,14 @@ $ mkdir [-mp] 目录名称
   -p：直接将所需要的目录（包括上层目录）递归建立
 ```
 
-## <a name="gr6ces"></a>删除『空』的目录
+## 删除『空』的目录
 
 ```powershell
 $ rmdir [-p] 目录名称
   -p：连同上层“空的”目录也一起删除
 ```
 
-## <a name="3rznrm"></a>档案与目录的显示
+## 档案与目录的显示
 
 ```powershell
 $ ls
@@ -214,7 +214,7 @@ $ ls
   --color[=WHEN]：使用不同的颜色高亮显示不同类型的。
 ```
 
-## <a name="x4ovrd"></a>复制档案或目录
+## 复制档案或目录
 
 ```powershell
 $ cp
@@ -235,7 +235,7 @@ $ cp
 * 源文件：制定源文件列表。默认情况下，cp 命令不能复制目录，如果要复制目录，则必须使用 -R 选项；
 * 目标文件：指定目标文件。当“源文件”为多个文件时，要求“目标文件”为指定的目录。
 
-## <a name="7hg6qg"></a>移除档案或目录
+## 移除档案或目录
 
 ```powershell
 $ rm
@@ -248,7 +248,7 @@ $ rm
 ```
 > 文件：指定被删除的文件列表，如果参数中含有目录，则必须加上 -r 或者 -R 选项。
 
-## <a name="b4i6qs"></a>移动档案与目录
+## 移动档案与目录
 
 ```powershell
 $ mv
@@ -262,7 +262,7 @@ $ mv
   -u：当源文件比目标文件新或者目标文件不存在时，才执行移动操作。
 ```
 
-## <a name="u60zdv"></a>取得路径的文件名与目录名
+## 取得路径的文件名与目录名
 
 ```powershell
 # 获取文档名称为 network
@@ -271,7 +271,7 @@ $ basename /etc/sysconfig/network
 $ dirname /etc/sysconfig/network
 ```
 
-## <a name="hbl1gw"></a>显示文件的内容
+## 显示文件的内容
 
 cat 命令连接文件并打印到标准输出设备上，cat 经常用来显示文件的内容
 
@@ -286,7 +286,7 @@ $ cat
 ```
 > __tac__ 是 cat 的倒着写
 
-## <a name="mexdyf"></a>输出行号
+## 输出行号
 
 ```powershell
 $ nl
@@ -303,7 +303,7 @@ $ nl
   -p ：在逻辑定界符处不重新开始计算。
 ```
 
-## <a name="nlvxsv"></a>分页显示档案内容
+## 分页显示档案内容
 
 ```powershell
 $ more
@@ -318,7 +318,7 @@ $ more
 * 与 more 类似，但是比 more 更好的是，他可以往前翻页：__less__
 * 只看头几行：__head__，只看尾几行：__tail__
 
-## <a name="ryg2pb"></a>修改档案时间或新建档案
+## 修改档案时间或新建档案
 
 ```powershell
 $ touch
@@ -333,7 +333,7 @@ $ touch
   --version：显示版本信息。
 ```
 
-## <a name="gysddm"></a>配置文件档案隐藏属性
+## 配置文件档案隐藏属性
 
 ```powershell
 $ chattr
@@ -346,7 +346,7 @@ $ chattr
 ```
 > 显示档案隐藏属性：__lsattr__
 
-## <a name="1xhcmz"></a>观察文件类型
+## 观察文件类型
 
 ```powershell
 $ file
@@ -359,7 +359,7 @@ $ file
   -z：尝试去解读压缩文件的内容。
 ```
 
-## <a name="6egrcy"></a>寻找特定档案
+## 寻找特定档案
 
 ```powershell
 $ locate
@@ -371,7 +371,7 @@ $ locate
   --version：显示版本信息。
 ```
 
-## <a name="ikf6eg"></a>压缩文件和读取压缩文件
+## 压缩文件和读取压缩文件
 
 ```powershell
 $ gzip
@@ -394,5 +394,4 @@ $ gzip
   --fast：此参数的效果和指定“-1”参数相同。
 ```
 > __zcat__ 用于不真正解压缩文件，就能显示压缩包中文件的内容的场合。
-> 
 

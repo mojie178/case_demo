@@ -1,6 +1,6 @@
 # git命令
 
-### <a name="onbhfo"></a>一、新建代码库
+### 一、新建代码库
 ```bash
 # 在当前目录新建一个Git代码库
 $ git init
@@ -12,7 +12,7 @@ $ git init [project-name]
 $ git clone [url]
 ```
 
-### <a name="0in8le"></a>二、配置
+### 二、配置
 ```bash
 # 显示当前的Git配置
 $ git config --list
@@ -25,7 +25,7 @@ $ git config [--global] user.name "[name]"
 $ git config [--global] user.email "[email address]"
 ```
 
-### <a name="w0ivtt"></a>三、增加/删除文件
+### 三、增加/删除文件
 ```bash
 # 添加指定文件到暂存区
 $ git add [file1] [file2] ...
@@ -50,7 +50,7 @@ $ git rm --cached [file]
 $ git mv [file-original] [file-renamed]
 ```
 
-### <a name="nm0dcd"></a>四、代码提交
+### 四、代码提交
 ```bash
 # 提交暂存区到仓库区
 $ git commit -m [message]
@@ -72,7 +72,7 @@ $ git commit --amend -m [message]
 $ git commit --amend [file1] [file2] ...
 ```
 
-### <a name="qxw8ic"></a>五、分支
+### 五、分支
 ```bash
 # 列出所有本地分支
 $ git branch
@@ -118,7 +118,7 @@ $ git push origin --delete [branch-name]
 $ git branch -dr [remote/branch]
 ```
 
-### <a name="6esnmg"></a>六、标签
+### 六、标签
 ```bash
 # 列出所有tag
 $ git tag
@@ -148,7 +148,7 @@ $ git push [remote] --tags
 $ git checkout -b [branch] [tag]
 ```
 
-### <a name="grlggx"></a>七、查看信息
+### 七、查看信息
 ```bash
 # 显示有变更的文件
 $ git status
@@ -212,7 +212,7 @@ $ git show [commit]:[filename]
 $ git reflog
 ```
 
-### <a name="8ht1mx"></a>八、远程同步
+### 八、远程同步
 ```bash
 # 下载远程仓库的所有变动
 $ git fetch [remote]
@@ -239,7 +239,7 @@ $ git push [remote] --force
 $ git push [remote] --all
 ```
 
-### <a name="mhgpae"></a>九、撤销
+### 九、撤销
 ```bash
 # 恢复暂存区的指定文件到工作区
 $ git checkout [file]
@@ -274,7 +274,7 @@ $ git stash
 $ git stash pop
 ```
 
-### <a name="81olws"></a>十、其它
+### 十、其它
 ```bash
 # 生成一个可供发布的压缩包
 $ git archive

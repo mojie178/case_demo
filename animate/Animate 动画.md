@@ -1,6 +1,6 @@
 # Animate 动画
 
-### <a name="nusucw"></a>基本用法
+### 基本用法
 1、在页面的 <head>中引入样式文件：
 ```html
 <head>
@@ -90,7 +90,7 @@ slideOutUp
 <h1 class="animated infinite bounce">Example</h1>
 ```
 例子可查看：[https://daneden.github.io/animate.css/](https://daneden.github.io/animate.css/)
-### <a name="7nznud"></a>与jQuery用法
+### 与jQuery用法
 当你将 animate.css 与 jQuery 一起使用或者添加你自己的 CSS 规则时， 你可以用 animate.css 做一大堆其他的事，使用 jQuery 动态添加动画：
 ```javascript
 $('#yourElement').addClass('animated bounceOutLeft')
@@ -109,7 +109,7 @@ $('#yourElement').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimat
 }
 ```
 __*注意：确保用供应商的前缀（webkit, moz, 等等）来替换上面CSS中的 vendor*__
-### <a name="paoruk"></a>自定义构建
+### 自定义构建
 Animate.css 由 gulp.js 提供支持，你可以很轻松地执行自定义构建。首先，你需要 Gulp 和其它的依赖项：
 ```bash
 $ cd path/to/animate.css/

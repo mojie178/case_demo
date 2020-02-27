@@ -1,7 +1,7 @@
 # Axios说明文档
 
 Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js 中。
-### <a name="e2y0lw"></a>特征：
+### 特征：
 * 从浏览器中创建 [XMLHttpRequests](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
 * 从 node.js 创建 [http](http://nodejs.org/api/http.html) 请求
 * 支持 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) API
@@ -10,7 +10,7 @@ Axios 是一个基于 promise 的 HTTP 库，可以用在浏览器和 node.js �
 * 取消请求
 * 自动转换 JSON 数据
 * 客户端支持防御 [XSRF](http://en.wikipedia.org/wiki/Cross-site_request_forgery)
-### <a name="fgqhfr"></a>用例：
+### 用例：
 __*执行 GET 请求：*__
 ```javascript
 // 为给定 ID 的 user 创建请求
@@ -63,9 +63,9 @@ axios.all([getUserAccount(), getUserPermissions()])
     // 两个请求现在都执行完成
     }));
 ```
-### <a name="k386qh"></a>axios API
+### axios API
 可以通过向 axios 传递相关配置来创建请求
-##### <a name="79pgas"></a>axios(config)
+##### axios(config)
 ```javascript
 // 发送 POST 请求
 axios({
@@ -77,12 +77,12 @@ axios({
   }
 });
 ```
-##### <a name="u9p9ax"></a>axios(url[, config])
+##### axios(url[, config])
 ```javascript
 // 发送 GET 请求（默认的方法）
 axios('/user/12345');
 ```
-### <a name="l417sa"></a>请求方法的别名
+### 请求方法的别名
 为方便起见，为所有支持的请求方法提供了别名
 __axios.request(config)__
 __axios.get(url[, config])__
@@ -92,11 +92,11 @@ __axios.post(url[, data[, config]])__
 __axios.put(url[, data[, config]])__
 __axios.patch(url[, data[, config]])__
 在使用别名方法时， url、method、data 这些属性都不必在配置中指定
-### <a name="se0nki"></a>并发
+### 并发
 处理并发请求的助手函数
 __axios.all(iterable)__
 __axios.spread(callback)__
-### <a name="eagywz"></a>创建实例
+### 创建实例
 以下是可用的实例方法。指定的配置将与实例的配置合并
 __axios#request(config)__
 __axios#get(url[, config])__
@@ -105,7 +105,7 @@ __axios#head(url[, config])__
 __axios#post(url[, data[, config]])__
 __axios#put(url[, data[, config]])__
 __axios#patch(url[, data[, config]])__
-### <a name="m67ndr"></a>请求配置
+### 请求配置
 这些是创建请求时可以用的配置选项。只有 url 是必需的。如果没有指定 method，请求将默认使用 get 方法
 ```javascript
 {
@@ -231,7 +231,7 @@ __axios#patch(url[, data[, config]])__
   cancelToken: new CancelToken(function (cancel) {
   })
 ```
-### <a name="pq56qd"></a>响应结构
+### 响应结构
 某个请求的响应包含以下信息
 ```javascript
 {
@@ -263,15 +263,15 @@ axios.get('/user/12345')
   });
 ```
 在使用 catch 时，或传递 rejection callback 作为 then 的第二个参数时，响应可以通过 error 对象可被使用。
-### <a name="tgeytd"></a>配置的默认值/defaults
+### 配置的默认值/defaults
 你可以指定将被用在各个请求的配置默认值
-### <a name="0w0nqm"></a>全局的 axios 默认值
+### 全局的 axios 默认值
 ```javascript
 axios.defaults.baseURL = 'https://api.example.com';
 axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 ```
-### <a name="0wmuea"></a>自定义实例默认值
+### 自定义实例默认值
 ```javascript
 // 创建实例时设置配置的默认值
 var instance = axios.create({
@@ -281,7 +281,7 @@ var instance = axios.create({
 // 在实例已创建后修改默认值
 instance.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 ```
-### <a name="gphufa"></a>配置的优先顺序
+### 配置的优先顺序
 配置会以一个优先顺序进行合并。这个顺序是：在 lib/defaults.js 找到的库的默认值，然后是实例的 defaults 属性，最后是请求的 config 参数。后者将优先于前者。这里是一个例子：
 ```javascript
 // 使用由库提供的配置的默认值来创建实例
@@ -296,7 +296,7 @@ instance.defaults.timeout = 2500;
 instance.get('/longRequest', {
   timeout: 5000
 ```
-### <a name="t5f3dl"></a>拦截器
+### 拦截器
 在请求或响应被 then 或 catch 处理前拦截它们
 ```javascript
 // 添加请求拦截器
@@ -326,7 +326,7 @@ axios.interceptors.request.eject(myInterceptor);
 ```javascript
 var instance = axios.create();
 ```
-### <a name="48fgaw"></a>错误处理
+### 错误处理
 ```javascript
 axios.get('/user/12345')
   .catch(function (error) {
@@ -350,7 +350,7 @@ axios.get('/user/12345', {
   }
 })
 ```
-### <a name="gcycwc"></a>取消请求
+### 取消请求
 使用 cancel token 取消请求
 ~~`*__Axios 的 cancel token API 基于 __*`~~[cancelable promises proposal](https://github.com/tc39/proposal-cancelable-promises)~~`*__，它还处于第一阶段__*`~~
 可以使用 CancelToken.source 工厂方法创建 cancel token，像这样：
