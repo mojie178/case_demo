@@ -17,11 +17,19 @@
       height: 400px;
       margin: 50px;
     }
+    .button {
+      width: 100px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      border-radius: 5px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div id="mapMeasure">测量距离</div>
-  <div id="measureArea">测量面积</div>
+  <div id="mapMeasure" class="button">测量距离</div>
+  <div id="measureArea" class="button">测量面积</div>
   <div id="bmap"></div>
   <script>
     var map = new BMap.Map("bmap") // 创建Map实例
