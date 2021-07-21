@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head></head>
+<body>
+  <!-- 游戏屏幕 10 * 20 -->
+  <div
+    id="box"
+    style="width: 256px; font: 25px/25px 宋体; background: #000; color: #9f9;"></div>
+  <script>
+    var arr = [15]; // 默认起始位置在15格（第2排第5个）arr代表贪吃蛇
+    var next = 10; // 默认朝下走，最好判断一下 arr[1] != arr[0] + x
+    document.onkeydown = function (e) {
+      // 根据键盘点击，选出相对应的值
+      next = {
+        '37': -1, // 左
+        '39': 1, // 右
+        '38': -10, // 上
+        '40': 10 // 下
+      } [(e ? e : event).keyCode]
+    };
+    var run = setInterval(function () {
+      // 定时器
+      // 左边界 右边界 上边界 下边界
+      var list = ['-1&&arr[0]%10==0', '1&&arr[0]%10==9', '-10&&arr[0]<10', '10&&arr[0]>189'];
+      var temp = arr[0] + next; // 贪吃蛇下一步走动
+      // 贪吃蛇到达边境 || 自己吃自己
+      if (list.some(function (x) { return eval('next==' + x) }) || arr.indexOf(temp) >= 0)
+        return clearInterval(run) || alert('OVER');
+      
+      arr.unshift(temp); // 将下一步添加到贪吃蛇头部
+
+      if (this.food == null || food == temp) { // 如果食物不存在，或者食物被吃
+        list = []; // (list = Array(200)).forEach(function(val, i) { list[i] = i });
+        for (var i = 0; i < 200; i++) // 共计200个格子
+          list.push(i);
+        list = list.filter(function (x) {
+          return arr.indexOf(x) < 0
+        });
+        // 随机在贪吃蛇外生成一个食物
+        food = list[Math.round(Math.random() * (list.length - 1))]; // food 是全局变量
+      } else arr.pop(); // 否则贪吃蛇去除最后一个
+      var s = ''; // 全角字符unicode码
+      for (var j = 0; j < 200; j++) { // 共计200个格子
+        if (j % 10 == 0 && j != 0) // 到达左边界换行
+          s += '<br/>';
+        if (arr.indexOf(j) >= 0) // 贪吃蛇为方块
+          s += '\u25a0';
+        else if (j == food) // 食物部分为星星
+          s += '\u2605';
+        else // 否则为空
+          s += ' ';
+      }
+      document.getElementById("box").innerHTML = s; // 渲染界面
+    }, 200);
+  </script>
+</body>
+</html>
